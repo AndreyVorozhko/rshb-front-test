@@ -1,0 +1,13 @@
+.style-from-custom-file {
+    color: red;
+}
+
+#jsonhover {
+    margin-top: 10px;
+    background: yellow;
+    padding: 10px;
+    width: 200px;
+    color: red;
+    border: 1px solid red;
+    text-align: center;
+}
