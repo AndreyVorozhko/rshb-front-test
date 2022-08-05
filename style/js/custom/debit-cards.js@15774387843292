@@ -1,0 +1,122 @@
+var creditCard = {
+	isSend : null,
+    init: function(){
+        creditCard.changeFilterInit();
+		creditCard.changeFilterInitAjax();
+    },
+    changeFilterInit:function(){
+	
+        if ( $('#cardFilterForm').length ) {
+            $('#cardFilterForm').find(':checkbox').change(function(){
+				
+				
+				if (this.checked){
+				$("input:checkbox").removeAttr("checked");
+				$(this).attr('checked', true);}
+				else{
+				$("input:checkbox").removeAttr("checked");
+				}
+                $('#cardFilterForm').submit();
+            });
+        }
+    },
+	
+	changeFilterInitAjax:function(){
+	
+			if ( null !== creditCard.isSend ){
+                return false;
+            }
+			function responseHandler( response ){
+                creditCard.isSend = null;
+				$('#firstContainer').hide();
+				
+                $('#resultContainerCards').html( response).show();
+                creditCard.showResultInit();
+            };
+			
+			$('#cardFilterForm1').find(':checkbox').change(function(){
+			
+				var checkedClass = 'e-checkbox-replacement_checked';
+				if($(this).is('#check_all')){
+				if($(this).is(':checked')){
+				
+                $("input:checkbox").removeAttr("checked");
+				$('.e-checkbox-replacement_checked').removeClass(checkedClass);
+				$(this).attr('checked', true);
+				$('#check_all').next().addClass(checkedClass);
+				} 
+				}
+				else {
+				$('#check_all').attr('checked', false);
+				$('#check_all').next().removeClass(checkedClass);
+				}
+				
+			
+			
+			
+			
+			// Проверка стоит галочка или нет
+			if ($(this).is(':checked')) {
+
+			var chkVal = $(this).attr("value");
+			var msg = "";					
+			$('form#cardFilterForm1 input[type=checkbox]:checked').each(function () { msg += "" + this.value + ",";});
+		
+			
+			 
+			
+			
+
+			$.ajax({
+				type: 'POST',
+                dataType: 'html',
+                target:    '/ajax/debitcards/',
+                url:    '/ajax/debitcards/?filter[]='+msg,
+				//beforeSend: function() { alert(msg); },
+                success:    responseHandler
+        });
+
+    }
+	else {
+				var msg = "";					
+				$('form#cardFilterForm1 input[type=checkbox]:checked').each(function () { msg += "" + this.value + ",";});
+				//$('form#cardFilterForm1 input[type=checkbox]').removeAttr('checked');
+				$.ajax({
+				type: 'POST',
+                dataType: 'html',
+                target:    '/ajax/debitcards/',
+                url:    '/ajax/debitcards/?filter[]='+msg,
+				//beforeSend: function() { alert(chk+ ' '+chkVal); },
+                success:    responseHandler
+        });
+	}
+
+	})
+	
+	},
+	showResultInit:function(){
+        $('.b-loan-result-trigger-show').click(function(e)
+        {
+            e.preventDefault();
+
+            var $container = $('.b-loan-result1');
+            $container.find('.b-loan-result-graph').slideDown();
+            $container.find('.b-loan-result-trigger-hide').show();
+            $(this).hide();
+        });
+        $('.b-loan-result-trigger-hide').click(function(e)
+        {
+            e.preventDefault();
+
+            var $container = $('.b-loan-result1');
+            $container.find('.b-loan-result-graph').slideUp();
+            $container.find('.b-loan-result-trigger-show').show();
+            $(this).hide();
+        });
+    }
+};
+$(function(){
+    creditCard.init();
+});
+
+

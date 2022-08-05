@@ -1,0 +1,303 @@
+(function($)
+{
+    $.fn.niceSlider = function(method)
+    {
+        this.each(function(index, element)
+        {
+
+            var $element = $(element);
+            var strValues = $element.data('values');
+            var values = [];
+            if(strValues)
+            {
+                values = strValues.split(',');
+            }
+
+            var $label = $('<span class="e-slider-label"></span>');
+            var range = $element.data('range') || 'min';
+            var min = $element.data('min') || 0;
+            var max = $element.data('max') || values.length - 1;
+            var selectedValues = $element.data('selected') || null;
+
+            var _update = function()
+            {
+                var $track = $element.find('.b-slider-track');
+                if($track.length)
+                {
+                    $track.css({
+                        'left': min / (values.length - 1) * 100 + '%',
+                        'width': (max - min) / (values.length - 1) * 100 + '%'
+                    });
+					
+                    var currentValue = $element.slider('value');
+                    if(currentValue < min)
+                    {
+                        $element.slider('value', min);
+                    }
+                    else if(currentValue > max)
+                    {
+                        currentValue = max;
+                        $element.slider('value', max);
+                    }
+
+                }
+            };
+
+            var _prepareValue = function(val)
+            {
+                return val;
+//                if(!val)
+//                {
+//                    return '';
+//                }
+//                var number = parseFloat(val) + '';
+//                return number + ' <span>' + val.substr(number.length) + '</span>';
+            };
+
+            var _updateLabels = function(newValues)
+            {
+                var updateSelector = $element.data('update');
+                if(updateSelector)
+                {
+                    if(range === true)
+                    {
+                        var firstValue = $.number(values[newValues[0]], 0, '', ' ');
+                        var secondValue = $.number(values[newValues[1]], 0, '', ' ');
+                        $(updateSelector).first().val(firstValue).trigger('keydown');
+                        $(updateSelector).last().val(secondValue).trigger('keydown');
+                    }
+                    else
+                    {
+                        $(updateSelector)
+                            .val($.number(values[newValues], 0, '', ' '))
+                            .trigger('keydown');
+                    }
+                }
+				
+                $element.trigger('nice-slide', newValues);
+            };
+            var _buildLabels = function()
+            {
+                var labelsData = $element.data('labels');
+                if(!labelsData)
+                {
+                    return;
+                }
+                labelsData = labelsData.split(';');
+
+                var $labels = $('<div class="b-form-slider-widget-labels"></div>');
+                $labels.css('margin', '0');
+                $element.append($labels);
+                for(var i in labelsData)
+                {
+                    var labelData = labelsData[i].split(':');
+                    var valueIndex = $.inArray(labelData[0], values);
+                    var $labelItem = $('<span class="b-form-slider-widget-labels-item">' + labelData[1] + '</span>');
+
+                    $labels.append($labelItem);
+                    $labels.append(' ');
+
+                    $labelItem.css({
+                        'position': 'absolute',
+                        'left': $element.outerWidth() * valueIndex / (values.length - 1) + 'px',
+                        'width': 'auto',
+                        'visibility': 'visible'
+                    });
+                    $labelItem.css({
+                        'margin-left': -$labelItem.width() / 2 + 'px'
+                    });
+                }
+
+//                var labelWidth = $element.width() / values.length * labelInt;
+//                $labels.css({
+//                    'margin-left': -labelWidth/2 + 'px',
+//                    'margin-right': -labelWidth/2 + 'px'
+//                });
+            };
+            var _initializeTrack = function()
+            {
+                if(typeof min != 'undefined' && typeof max != 'undefined')
+                {
+                    var labelInt = $element.data('label-int') || 1;
+                    var $track = $('<div class="b-slider-track"></div>');
+                    $element.prepend($track);
+                    $track.css({
+                        'left': min / (values.length - 1) * 100 + '%',
+                        'width': (max - min) / (values.length - 1) * 100 + '%'
+                    });
+                }
+            };
+            var _nearestIndex = function(longValue)
+            {
+                var newValue = parseInt(longValue);
+                var lastGoodIndex = -1;
+                for(var i in values)
+                {
+                    var currentValue = parseInt(values[i]);
+                    if(currentValue <= newValue && (i == values.length - 1 || newValue < parseInt(values[+i + 1])))
+                    {
+                        lastGoodIndex = i;
+                        break;
+                    }
+                }
+
+                return lastGoodIndex;
+            };
+            var _initializeValue = function()
+            {
+                var $update = $($element.data('update'));
+                if(range === true)
+                {
+                    var firstValue = $element.data('value1') || min;
+                    var secondValue = $element.data('value2') || max;
+
+                    $update.first().val(firstValue);
+                    $update.last().val(secondValue);
+
+                    $element.slider('values', [_nearestIndex(firstValue), _nearestIndex(secondValue)]);
+                }
+                else
+                {
+                    var selectedValue = _nearestIndex($element.data('value') || min);
+                    if(typeof selectedValue != 'undefined')
+                    {
+                        $element.slider('value', selectedValue);
+                    }
+                    else
+                    {
+                        $element.slider('value', 0);
+                    }
+                }
+            };
+
+            var _initialize = function()
+            {
+                $element.slider({
+                    'range': range,
+                    'min': 0,
+                    'max': values.length - 1,
+                    'create': function(event, ui)
+                    {
+                        _buildLabels();
+                        _initializeValue();
+                    },
+                    'slide': function(event, ui)
+                    {
+                        if(!event.originalEvent)
+                        {
+                            return;
+                        }
+                        if(ui.value < min || ui.value > max || ((range == true) && ui.values[0] == ui.values[1]))
+                        {
+                            event.preventDefault();
+                            return;
+                        }
+                        var value = ui.value;
+
+                        if(range === true)
+                        {
+                            var minChanged = ui.value == ui.values[0];
+                            var newValues = ui.values;
+                            _updateLabels(ui.values);
+                        }
+                        else
+                        {
+                            _updateLabels(ui.value);
+                        }
+                    },
+                    'change': function(event, ui)
+                    {
+                        if(!event.originalEvent)
+                        {
+                            return;
+                        }
+                        _updateLabels(ui.values || ui.value);
+                    }
+                });
+
+                if(range === true)
+                {
+                    var $update = $($element.data('update'));
+                    var value1 = $element.data('value1') || values[min];
+                    var value2 = $element.data('value2') || values[max];
+                    $update.first().val($.number(value1, 0, '', ' '));
+                    $update.last().val($.number(value2, 0, '', ' '));
+                }
+                else
+                {
+                    var value = $element.data('value') || values[min];
+                    $($element.data('update')).val($.number(value, 0, '', ' '));
+                }
+
+                var $update = $($element.data('update'));
+                if(range === true)
+                {
+                    $update.first().bind('change', function(e)
+                    {
+                        var newValue = parseInt($(this).val().replace(/\s/g, ''));
+                        var lastGoodIndex = -1;
+                        for(var i in values)
+                        {
+                            var currentValue = parseInt(values[i]);
+                            if(currentValue <= newValue && (i == values.length - 1 || newValue < parseInt(values[+i + 1])))
+                            {
+                                lastGoodIndex = i;
+                                break;
+                            }
+                        }
+                        var newValues = $element.slider('values');
+                        $element.slider('option', 'values', [lastGoodIndex, newValues[1]]);
+                        $(this).val($.number(newValue, 0, '', ' '));
+                    });
+                    $update.last().bind('change', function(e)
+                    {
+                        var newValue = parseInt($(this).val().replace(/\s/g, ''));
+                        var lastGoodIndex = -1;
+                        for(var i in values)
+                        {
+                            var currentValue = parseInt(values[i]);
+                            if(currentValue <= newValue && (i == values.length - 1 || newValue < parseInt(values[+i + 1])))
+                            {
+                                lastGoodIndex = i;
+                                break;
+                            }
+                        }
+                        var newValues = $element.slider('values');
+                        $element.slider('option', 'values', [newValues[0], lastGoodIndex]);
+                        $(this).val($.number(newValue, 0, '', ' '));
+                    });
+                }
+                else
+                {
+                    $update.bind('change', function(e)
+                    {
+                        var newValue = parseInt($(this).val().replace(/\s/g, ''));
+                        var lastGoodIndex = -1;
+                        for(var i in values)
+                        {
+                            var currentValue = parseInt(values[i]);
+                            if(currentValue <= newValue && (i == values.length - 1 || newValue < parseInt(values[+i + 1])))
+                            {
+                                lastGoodIndex = i;
+                                break;
+                            }
+                        }
+                        var newValue = lastGoodIndex;
+                        $element.slider('option', 'value', newValue);
+                    });
+                }
+            };
+
+            if(!method || method == 'initialize')
+            {
+                _initialize();
+            }
+            else if(method == 'update')
+            {
+                _update();
+            }
+        });
+
+        return this;
+    };
+})(jQuery);

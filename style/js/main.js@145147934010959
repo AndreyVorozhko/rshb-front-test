@@ -1,0 +1,60 @@
+/* Copyright 2015, INDEE Interactive */
+CONFIG={/* some config variables */
+respond:function(){var a=!0,b=document.location.hash;return b.length>0&&-1!==b.indexOf("respond=off")&&(a=!1),a}(),smoothing:function(){var a=!0,b=document.location.hash;return b.length>0&&-1!==b.indexOf("smoothing=off")&&(a=!1),a}()},function(){CONFIG.smoothing?$("html").addClass("css-smoothing-on"):$("html").addClass("css-smoothing-off")}();var $window=$(window),$body=$(document.body);$(function(){function a(a){var b=!1;return-1!==a.indexOf("px")&&(b=1*a.replace("px",""),isNaN(b)&&(b=!1)),b}function b(a,b,c,d,e){a.css("font-size",b),nextTick(function(){a.width()<=c&&a.height()<=d?e(!0,b):e(!1,b)})}var c=$(document.body);nextTick(function(){$(".b-slider-items.-main").each(function(){var d=$(this),e=d.find(".b-slider-items-item");e.each(function(){function d(){k.removeAttr("style")}function e(c){o&&(o=!1,d(),nextTick(function(){function d(a,e){p-n>1?(a?(q=e,n=e):p=e,next=Math.round((n+p)/2),b(k,next,f,i,d)):(a||k.css("font-size",q),o=!0,k.css("visibility","visible"),"function"==typeof c&&c(q))}var e=j.height(),f=j.width();titleHeight=k.height(),textHeight=l.outerHeight(!0),buttonsHeight=m.outerHeight(!0),minFontSize=l.css("font-size"),maxFontSize=k.css("font-size"),titleLineHeight=a(k.css("line-height")),textLineHeight=a(l.css("line-height")),minFontSizeNumber=a(minFontSize),maxFontSizeNumber=a(maxFontSize),l.is(":empty")&&(textHeight/=2);var h=titleLineHeight===!1&&textLineHeight===!1&&minFontSizeNumber===!1&&maxFontSizeNumber===!1;if(h)o=!0,console.error("fittext","Wrong css data. Font-sizes should be set in pixels.");else if(titleLineHeight/=maxFontSizeNumber,textLineHeight/=minFontSizeNumber,g=titleLineHeight,titleHeight+textHeight+buttonsHeight>e){k.css("visibility","hidden");var i=e-textHeight-buttonsHeight,n=(Math.floor(i/titleLineHeight/minFontSizeNumber),minFontSizeNumber),p=maxFontSizeNumber,q=minFontSizeNumber;d(!1,maxFontSizeNumber)}else o=!0}))}var f,g,h,i=$(this),j=i.find(".b-slider-items-item-inner"),k=i.find(".title"),l=i.find(".text-content"),m=i.find(".b-slider-items-item-actions");if(k.length&&l.length){f=a(k.css("font-size")),g=1.1,h=3,k.css({display:"inline-block"});var n=function(){function a(a,e){var f=(b-c)*a-g*e*d;k.css("margin-top",f/2)}var b=160/620,c=.24,d=(b-c)*$(document.body).width()/(f*g);return a}(),o=!0;c.bind("changeWidth",function(a,b){e(function(a){n(b,a)})})}})})}),function(){var a=$(document.body),b=!1,c=a.width();$(window).resize(function(){b&&clearTimeout(b),setTimeout(function(){var b=a.width();b!==c&&(c=b,a.trigger("changeWidth",[c]))},300)}),nextTick(function(){a.trigger("changeWidth",[a.width()])})}()}),$(function(){$("html").is(".bx-ie8")&&!function(){/* Last child dirty hack */
+/* add to last child special class (.-lastchild) */
+var a=[".b-file-item-wrapper"],b=a.join(":last-child ,")+":last-child";$(b).addClass("-last-child")}()}),$(function(){var a=$("html"),b="";$("#overlay").hide(),$(".b-popup").hide();var c=!1,d=function(){if(c){if(a.removeClass("is-overlayed"),$("#overlay").hide(),$(".l-wrapper").detach().prependTo("body"),$(".l-footer").detach().appendTo("body"),$(".b-content-wrapper").length)var b=$(".b-content-wrapper").data("scroll");$(".b-content-wrapper").remove(),$(".b-popup").detach().appendTo("body"),$(".b-popup-wrapper").remove(),$(".b-popup").hide(),b&&$(window).scrollTop(b)}};$("body").click(function(a){$(a.target).is(".b-popup, .fancybox-close, .b-popup *, .e-popup-trigger, .e-popup-trigger *, .e-dont-close")||$(a.target).parents(".fancybox-overlay").length||d()}),$(".e-popup-close").bind("click",function(a){a.preventDefault(),d()});var b={center:function(a,b,c){b.outerHeight()<$(window).height()?b.css({"margin-top":($(window).height()-b.outerHeight())/2}):b.css({margin:"30px 0"}),b.css({display:"inline-block",zoom:"1",position:"relative"})},relative:function(a,b,c){var d=a.offset(),e={top:d.top+a.height()+c.top,left:d.left+a.outerWidth()-c.right-b.outerWidth(),"margin-top":0,"margin-left":0};b.css(e)},top:function(a,b,c){b.css({display:"inline-block",zoom:"1",position:"relative"})}},e=function(e,f,g){g=g||{};var h=$(e);if(1==h.length){var i=g.position||"center",j=b[i];if(j){j(f,h,g),g.showOverlay&&$("#overlay").show(),d();var k=$('<div class="b-content-wrapper"></div>').css({top:-$(window).scrollTop()}).data("scroll",$(window).scrollTop());$(".l-wrapper, .l-footer").detach().appendTo(k),$("body").append(k),h.wrap('<div class="b-popup-wrapper"></div>'),h.css({display:"inline-block"}),$(window).scrollTop(0),c=!0,a.addClass("is-overlayed")}}};$(".e-popup-trigger").bind("click",function(a){a.preventDefault(),console.log("click",a.target,this);var b=$(this),c={position:b.data("popup-position"),top:b.data("popup-top"),right:b.data("popup-right")};e(b.attr("href"),b,c)}),window.showPopup=function(a,b,c){e(a,b,c)}}),/*! Pushy - v0.9.2 - 2014-9-13
+* Pushy is a responsive off-canvas navigation menu using CSS transforms & transitions.
+* https://github.com/christophery/pushy/
+* by Christopher Yee */
+$(function(){function a(){console.log(13,f,f.is(".pushy-active")),f.addClass(k),//toggle site overlay
+e.addClass(j),g.addClass(l),h.addClass(m),//css class to add pushy capability
+console.log(14,f.hasClass("pushy-active"))}function b(){console.log(23,f,f.is(".pushy-active")),f.removeClass(k),//toggle site overlay
+e.removeClass(j).addClass("pushy-left"),g.removeClass(l),h.removeClass(m),//css class to add pushy capability
+console.log(24,f.hasClass("pushy-active"))}function c(){f.addClass(k),e.animate({left:"0px"},o),g.animate({left:q},o),h.animate({left:q},o)}function d(){f.removeClass(k),e.animate({left:"-"+q},o),g.animate({left:"0px"},o),h.animate({left:"0px"},o)}var e=$(".js-pushy"),// aka '.pushy', menu css class
+f=$(document.body),g=$(".js-pushy-container"),// aka '#container', container css class
+h=$(".js-pushy-nav"),// aka '.push', css class to add pushy capability
+i=$(".js-push-overlay"),// aka '.site-overlay', site overlay
+j="pushy-open",//menu position & menu open class
+k="pushy-active",//css class to toggle site overlay
+l="container-push",//container open class
+m="push-push",//css class to add pushy capability
+n=$(".js-pushy-trigger"),// aka '.menu-btn, .pushy a', css classes to toggle the menu
+o=200,//jQuery fallback menu speed
+p=$(".e-popup-trigger"),q=e.width()+"px";if(
+//checks if 3d transforms are supported removing the modernizr dependency
+cssTransforms3d=function(){var a=document.createElement("p"),b=!1,c={webkitTransform:"-webkit-transform",OTransform:"-o-transform",msTransform:"-ms-transform",MozTransform:"-moz-transform",transform:"transform"};
+// Add it to the body to get the computed style
+document.body.insertBefore(a,null);for(var d in c)void 0!==a.style[d]&&(a.style[d]="translate3d(1px,1px,1px)",b=window.getComputedStyle(a).getPropertyValue(c[d]));return document.body.removeChild(a),void 0!==b&&b.length>0&&"none"!==b}(),cssTransforms3d){var r=!0;
+//toggle menu
+n.click(function(){r?(a(),r=!1):(b(),r=!0)}),
+//close menu when clicking site overlay
+i.click(function(){r?(a(),r=!1):(b(),r=!0)}),p.click(function(){r||(b(),r=!0)})}else{
+//jQuery fallback
+e.css({left:"-"+q}),//hide menu by default
+g.css({"overflow-x":"hidden"});//fixes IE scrollbar issue
+//keep track of menu state (open/close)
+var r=!0;
+//toggle menu
+n.click(function(){r?(c(),r=!1):(d(),r=!0)}),
+//close menu when clicking site overlay
+i.click(function(){r?(c(),r=!1):(d(),r=!0)}),p.click(function(){r||(d(),r=!0)})}}),$(function(){$(".b-slide-pane-head-lnk, .b-slide-pane-head-lnk-prem, .b-slide-pane-head-lnk-ultra").click(function(a){a.preventDefault();var b=$(this).closest(".b-slide-pane");b.is(".b-slide-pane_open")?b.find(".b-slide-pane-content").slideUp(function(){b.removeClass("b-slide-pane_open")}):b.find(".b-slide-pane-content").slideDown(function(){b.addClass("b-slide-pane_open")})}),$(".b-slide-pane-head-lnk-inn").click(function(a){a.preventDefault();var b=$(this).closest(".b-slide-pane-inn");b.is(".b-slide-pane_open-inn")?b.find(".b-slide-pane-content-inn").slideUp(function(){b.removeClass("b-slide-pane_open-inn")}):b.find(".b-slide-pane-content-inn").slideDown(function(){b.addClass("b-slide-pane_open-inn")})}),
+// open first element
+function(){var a=$(".b-slide-pane_open");a.length?a.length>1&&a.not(":first").removeClass(".b-slide-pane_open"):$(".b-slide-pane:first:not(.js-not-auto-open)").addClass("b-slide-pane_open"),
+// collapse nested slide panes
+$(".b-slide-pane_open-inn").removeClass("b-slide-pane_open-inn"),$(".b-slide-pane-content-inn").hide()}()}),$(function(){
+// old slider with fixed width. Should be restyled to responsive mode before refactoring with customSlider plugin
+$(".b-cards-clider").filter(":visible").each(function(a,b){!function(a){for(var b=0,c=a.find(".b-quotes-pages"),d=c.children().length,e=(a.find(".b-quotes-clip"),728),f=a.find(".b-quotes-nav").empty(),g=0;d>g;g++){var h=$('<span class="b-quotes-nav-item"></span>');h.data("element-index",g),0==g&&h.addClass("b-quotes-nav-item_active"),f.append(h)}var i=function(a){c.animate({left:-a*e},function(){b=a,$(f.children().removeClass("b-quotes-nav-item_active").get(b)).addClass("b-quotes-nav-item_active")})};a.find(".b-quotes-nav-item").on("click",function(a){a.preventDefault();var b=$(this).data("element-index");i(b)});var j=9e3,k=function(){i((b+1)%d),window.setTimeout(k,j)};window.setTimeout(k,j)}($(b))}),
+// new refactored version
+$(".b-slider").filter(":visible").customSlider(),$(".b-quotes").filter(":visible").customSlider({delay:9e3,classnames:{container:"b-quotes-pages",nav:"b-quotes-nav",navItem:"b-quotes-nav-item"}}),
+$(".b-slider2").filter(":visible").customSlider(),$(".b-quotes").filter(":visible").customSlider({delay:9e3,classnames:{container:"b-quotes-pages",nav:"b-quotes-nav",navItem:"b-quotes-nav-item"}}),
+// external nav for slider
+$(".js-slider-nav-external").each(function(){var a=$(this),b=a.data("slider"),c=$(b).filter(":visible"),d=a.find(".js-slider-nav-item");if(c.length){var e=c.data("customSlider");e&&d.click(function(a){a.preventDefault();var b=1*$(this).data("slider-slide");isNaN(b)||e.changeTo(b)})}})}),$(function(){$(".b-tabbed-head-item, .b-tabbed-head-item3, .b-tabbed-head-item43, .b-tabbed-head-item4").customTabbed(),
+// once
+$(".b-tabbed-head-item-micex").customTabbed({isOnce:!0}),
+// prem
+$(".b-tabbed-head-item-prem, .b-tabbed-head-item3-prem, .b-tabbed-head-item4-prem").customTabbed({classnames:{headActive:"b-tabbed-head-item_active-prem",bodyActive:"b-tabbed-pages-item_current-prem"}}),
+// premprem
+$(".b-tabbed-head-item-prem, .b-tabbed-head-item3-prem, .b-tabbed-head-item4-prem").customTabbed({classnames:{headActive:"b-tabbed-head-item_active-premprem"}}),
+// other
+$(".b-tabbed-head-item-micext").customTabbed({callback:function(){$(".b-tabbed-head-item_active").removeClass("b-tabbed-head-item_active"),$(".b-tabbed-head").find(".b-tabbed-head-item43:last").addClass("b-tabbed-head-item_active")}})});
+//# sourceMappingURL=main.js.map

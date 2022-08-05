@@ -1,0 +1,10 @@
+var innerMenu = {
+
+    init: function(){
+        $('.b-tabbed_small').find('.b-tabbed-head-item').unbind();
+		$('.ssmall').find('.b-tabbed-head-item').unbind();
+    }
+};
+$(function(){
+    innerMenu.init();
+});

@@ -1,0 +1,13 @@
+var cityGeoip = {
+    init: function(){
+        if ( typeof ymaps !== 'undefined' ) {
+            ymaps.ready(function(){
+                $.post('/ajax/geoip/city.php', {'city': ymaps.geolocation.city, 'region': ymaps.geolocation.region });
+            });
+        }
+
+    }
+};
+$(function(){
+    cityGeoip.init();
+});

@@ -1,0 +1,806 @@
+$(document).ready(function()
+{
+    $('[placeholder]').placeholder();
+
+    /*vacancies*/
+    $('.slide-pane-items > li').each(function(){
+        var spi = $(this);
+        spi.find('a.slideclick').click(function(){
+            $(this).toggleClass('open');
+            spi.find('div.b-vacancy').slideToggle();
+            return false;
+        })
+    });
+
+
+    $('.b-document-view-action').click(function(e)
+    {
+        var $self = $(this);
+        var $pane = $(this)
+            .closest('.b-document-view')
+            .find('.b-document-view-content');
+
+        var curHeight = $pane.height();
+        var autoHeight = $pane.css('height', 'auto').height();
+        $pane.height(curHeight).animate({height: autoHeight}, 1000, function()
+        {
+            $self.parent().hide();
+        });
+    });
+	$('.b-tabbed-head-item-micex').click(function(e)
+    {
+        e.preventDefault();
+
+        var $self = $(this);
+        if($self.is('.b-tabbed-head-item_active'))
+        {
+            return;
+        }
+
+        var $tabbed = $self.closest('.b-tabbed');
+        $('.b-tabbed-pages-item_current').removeClass('b-tabbed-pages-item_current');
+        $($self.attr('href')).addClass('b-tabbed-pages-item_current');
+        $('.b-tabbed-head-item_active').removeClass('b-tabbed-head-item_active');
+        //$self.addClass('b-tabbed-head-item_active');
+    });
+    $('.b-office-link').click(function(e)
+    {
+        e.preventDefault();
+        $(this).closest('.b-office').toggleClass('b-office_open');
+    });
+
+    $('input[type=checkbox]').niceCheckbox();
+    $('input[type=radio]').niceRadio();
+    $('select').selectBox();
+
+    $('.b-form-slider-stepped').niceSlider();
+    $('.b-form-slider-widget').each(function(index, element)
+    {
+        (function()
+        {
+            var $element = $(element);
+            var range = $element.data('range') || 'min';
+            var min = $element.data('min') || 0;
+            var max = $element.data('max') || 0;
+            var value = $element.data('value') || min;
+            var update = $($element.data('update'));
+            var step = $element.data('step') || 1;
+            var showLabels = !!$element.data('labels') || false;
+            var disabledValue = $element.data('disabled');
+            var stopCallback = $element.data('stopcallback') || false;
+            var unlimit = $element.data('unlimit') && $element.data('unlimit') == "Y" || false;
+			
+            var options = {
+                'range': range,
+                'min': min,
+                'max': max,
+                'step': step
+            };
+
+            if ( false !== stopCallback ) {
+                options['stop'] = eval( stopCallback );
+            }
+
+            $element.slider(options);
+
+            if(showLabels)
+            {
+                var $labelsContainer = $('<div class="b-form-slider-widget-labels"></div>');
+                $element.prepend($labelsContainer);
+
+
+                var currentValue = min;
+
+                sliderValuesCompliance = $.parseJSON( sliderValuesCompliance );
+
+                while(currentValue <= max)
+                {
+                    var stepTitle = currentValue;
+                    if ( typeof sliderValuesCompliance !== 'undefined' && typeof sliderValuesCompliance[ currentValue ] !== 'undefined' ) {
+                        stepTitle = sliderValuesCompliance[ currentValue ];
+                    }
+
+                    //$labelsContainer.append('<span class="b-form-slider-widget-labels-item">' + stepTitle + '</span> ');
+                    currentValue += step;
+                }
+				//$labelsContainer.append('<span class="b-form-slider-widget-labels-item" style="display: none;">1</span> <span style="padding-left: 8.3%;">2</span> <span class="b-form-slider-widget-labels-item" style="padding-left: 7.5%;">3</span> <span class="b-form-slider-widget-labels-item" style="padding-left: 7.5%;">6</span> <span class="b-form-slider-widget-labels-item" style="padding-left: 7.5%;">9</span> <span class="b-form-slider-widget-labels-item" style="padding-left: 6.7%;">13</span> <span class="b-form-slider-widget-labels-item" style="padding-left: 6.7%;">15</span><span class="b-form-slider-widget-labels-item" style="padding-left: 6.1%;">18</span> <span class="b-form-slider-widget-labels-item" style="padding-left: 6.1%;">24</span> <span class="b-form-slider-widget-labels-item" style="padding-left: 6.5%;">30</span> <span class="b-form-slider-widget-labels-item" style="padding-left: 6.5%;">36</span> <span class="b-form-slider-widget-labels-item" style="padding-left: 6.5%;">48</span> <span class="b-form-slider-widget-labels-item" style="display: none;">60</span> ');
+            }
+			
+			
+
+            if(update.length)
+            {
+                update.bind('keypress', function(e)
+                {
+                    //if(!(48 <= e.which && e.which <= 57))
+                    //{
+                    //    e.preventDefault();
+                    //}
+                    //var $self = $(this);
+                    //$self.val($.number(+$self.val(), 0, '', ' '));
+                });
+
+                $element.bind('slide'+(!unlimit ? ' slidechange' : ''), function(event, ui)
+                {
+                    if(ui.value == disabledValue)
+                    {
+                        //event.cancel();
+                        //$element.slider('value', ui.value + 1);
+                        //return false;
+                        ui.value += 1;
+                    }
+					
+                    if(range == true)
+                    {
+                        var values = ui.values;
+                        for(var i in values)
+                        {
+                            var preparedValue = $.number(values[i], 0, '', ' ');
+                            $(update.get(i)).val(preparedValue).trigger('keydown');
+                        }
+                    }
+                    else
+                    {
+                        var preparedValue = $.number(ui.value, 0, '', ' ');
+												
+						var persent=(ui.value - $element.data('min') )/ ( $element.data('max') - $element.data('min') ) * 100;
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+												
+                        var value = ui.value;
+                        if ( showLabels && typeof sliderValuesCompliance !== 'undefined' && typeof sliderValuesCompliance[ value ] !== 'undefined' )
+                        {
+                            preparedValue = sliderValuesCompliance[ value ];
+							
+
+                        }
+
+						if (unlimit)
+						{
+	                        if (ui.value<10000000)
+	                        {
+	                        	update
+	                            	.val(preparedValue)
+									.trigger('keydown');
+
+	                        }
+	                        else
+	                        {
+		                        update.val(preparedValue);
+
+	                        }
+	                    }
+	                    else
+	                    {
+                        	update
+                            	.val(preparedValue)
+								.trigger('keydown');
+							
+							console.log(persent);
+							if(update.attr('id') == 'loan-dur'){
+								$('#prnextlink').attr('href', $('#linktemplate').val().replace('-pr-', preparedValue).replace('-tm-', $('#creditAmount_rur').val().replace(' ', '').replace(' ', '')));
+								$('#prnextlink2').attr('href', $('#linktemplate').val().replace('-pr-', preparedValue).replace('-tm-', $('#creditAmount_rur').val().replace(' ', '').replace(' ', '')));
+								//$('#prnextlink').attr('href', $('#linktemplate').val().replace('-tm-', $('#creditAmount_rur').val()));
+							}
+							if(update.attr('id') == 'creditAmount_rur') {
+								$('#prnextlink').attr('href', $('#linktemplate').val().replace('-tm-', preparedValue.replace(' ', '').replace(' ', '')).replace('-pr-', $('#loan-dur').val()));
+								$('#prnextlink2').attr('href', $('#linktemplate').val().replace('-tm-', preparedValue.replace(' ', '').replace(' ', '')).replace('-pr-', $('#loan-dur').val()));
+								//$('#prnextlink').attr('href', $('#linktemplate').val().replace('-pr-', $('#loan-dur').val()));
+							}
+	                    }
+                    }
+                });
+
+                if (unlimit)
+                {
+	                $element.bind('slidechange', function(event, ui){
+						if (ui.value<10000000)
+						{
+							var preparedValue = $.number(ui.value, 0, '', ' ');
+
+							update.val(preparedValue);
+
+						}
+						else
+						{
+							var c = update.val();
+							c = c.replace(' ', '');
+							c = c.replace('руб.', '');
+							c = c.replace(/[^0-9\\.]+/g, '');
+
+							var preparedValue = $.number(c, 0, '', ' ');
+
+							update.val(preparedValue);
+
+						}
+	                });
+				}
+
+                update.bind('change', function(e)
+                {
+					if ( $element.is(':visible') )
+					{
+						if(update.length == 1)
+						{
+							//$element.slider('value', update.val().replace(/\s/g, ''));
+							
+							if (update[0].id== 'depositPeriod')  {
+
+								var entv = Number(update.val().replace(/\s/g, ''));
+								var dep_good_val = 1;
+								var dep_good_idx = 1;
+								for (var k in sliderValuesCompliance) {
+									if (entv >= sliderValuesCompliance[k]) {
+										dep_good_idx = k;
+										dep_good_val = sliderValuesCompliance[k];
+									}
+									else {
+										break;
+									}
+								}
+							
+							$element.slider('value', dep_good_idx);
+							
+							}
+							else {
+
+								$element.slider('value', update.val().replace(/\s/g, ''));
+
+							}
+						}
+						else if(update.length == 2)
+						{
+							$element.slider('values', [+update.first().val().replace(/\s/g, ''), +update.last().val().replace(/\s/g, '')]);
+						}
+					}
+
+                });
+            }
+            if(range == true)
+            {
+
+                $element.slider('option', 'values', value.split(','));
+            }
+            else
+            {
+                $element.slider('value', value);
+            }
+        })();
+    });
+
+    $('.b-switch').each(function(index, element)
+    {
+        var $element = $(element);
+        var $indicator = $element.find('.b-switch-indicator');
+        $element.find('.b-switch-item').click(function(e)
+        {
+            e.preventDefault();
+            var $self = $(this);
+            $element.find('.b-switch-item').removeClass('b-switch-item_active');
+            $self.addClass('b-switch-item_active');
+            $indicator.toggleClass('b-switch-indicator_right');
+        });
+    });
+
+    $('.js-sidebar-top').each(function(i, e)
+    {
+        var $self = $(e);
+
+        if ($(window).width() < 700 )
+        {
+            return false;
+        }
+
+        $self.css({'position': 'absolute', 'left': 0, 'right': 0});
+
+        var eventF = function()
+        {
+            var scrollValue = $(window).scrollTop();
+			if ((scrollValue - $self.parent().offset().top)>0){
+            $self.css({
+                'top': '0px'
+            });
+			}
+        };
+
+        $(window).scroll(eventF);
+        eventF();
+    });
+	$('.js-sidebar-top2').each(function(i, e)
+    {
+        var $self = $(e);
+
+        if ($(window).width() < 700 )
+        {
+            return false;
+        }
+
+        $self.css({});
+
+        var eventF = function()
+        {
+            var scrollValue = $(window).scrollTop();
+			if ((scrollValue - $self.parent().offset().top)>0){
+            $self.css({
+                'position': 'fixed'
+            });
+			$self.css({
+                'top': '0px'
+            });
+			$self.css({
+                'width': '20%'
+            });
+			} else $('.js-sidebar-top2').removeAttr('style');
+        };
+
+        $(window).scroll(eventF);
+        eventF();
+    });
+
+    $('.b-branch-contacts-trigger-show').click(function(e)
+    {
+        e.preventDefault();
+
+        var $self = $(this);
+        var $container = $self.closest('.b-branch');
+        $container.find('.b-branch-contacts').slideDown();
+        $self.hide();
+        $container.find('.b-branch-contacts-trigger-hide').show();
+    });
+	
+	$('.b-branch-contacts-trigger-hide').click(function(e)
+    {
+        e.preventDefault();
+
+        var $self = $(this);
+        var $container = $self.closest('.b-branch');
+        $container.find('.b-branch-contacts').slideUp();
+        $self.hide();
+        $container.find('.b-branch-contacts-trigger-show').show();
+    });
+
+    $('#serviceDirection').click(function(e)
+    {
+        e.preventDefault();
+            $container.find('.b-loan-result-trigger-hide').show();
+            $(this).hide();
+        });
+
+    $('#microshow').click(function(e)
+    {
+        e.preventDefault();
+        $('#micro').show();
+		$('#start').hide();
+		$(".b-slider2").customSlider();
+    });
+	$('#smallshow').click(function(e)
+    {
+        e.preventDefault();
+        $('#small').show();
+		$('#start').hide();
+		$(".b-slider2").customSlider();
+    });
+	$('#corpshow').click(function(e)
+    {
+        e.preventDefault();
+        $('#corp').show();
+		$('#start').hide();
+		$(".b-slider2").customSlider();
+    });
+
+    $('.b-checkbox-group-all a').click(function(e)
+    {
+        e.preventDefault();
+        $(this).closest('.b-checkbox-group').find('input[type=checkbox]').each(function(ind, el)
+        {
+            var $el = $(el);
+            if(!$el.is(':checked'))
+            {
+                $el.attr('checked', 'checked');
+                $el.change();
+            }
+        });
+    });
+
+    $('.js-show-search').click(function(e)
+    {
+        e.preventDefault();
+
+        $('.b-quick-search').addClass('show').find('input').focus();
+    });
+
+    $('.b-quick-search-close').click(function(e)
+    {
+        e.preventDefault();
+
+        $('.b-quick-search').removeClass('show');
+    });
+
+    $('.b-loan-result-trigger-show').click(function(e)
+    {
+        e.preventDefault();
+
+        var $container = $('.b-loan-result');
+        $container.find('.b-loan-result-graph').slideDown();
+        $container.find('.b-loan-result-trigger-hide').show();
+        $(this).hide();
+    });
+    $('.b-loan-result-trigger-hide').click(function(e)
+    {
+        e.preventDefault();
+
+        var $container = $('.b-loan-result');
+        $container.find('.b-loan-result-graph').slideUp();
+        $container.find('.b-loan-result-trigger-show').show();
+        $(this).hide();
+    });
+
+    //$('.b-form-slider-widget').niceSlider();
+
+
+
+    $('.b-office-full-map').each(function(ind, el)
+    {
+        var $mapNode = $(el);
+        var mapCenter = $mapNode.data('center') || "55.76, 37.64";
+        var mapZoom = $mapNode.data('zoom') || 7;
+        ymaps.ready(function()
+        {
+            var map = new ymaps.Map($mapNode.get()[0], {
+                'center': mapCenter.split(','),
+                'zoom': mapZoom
+            });
+
+            var mark = new ymaps.Placemark([55.76, 37.64], { content: 'Москва!', balloonContent: 'Столица России' }, {
+                iconImageHref: '/style/img/map-mark.png',
+                iconImageSize: [46, 70],
+                iconImageOffset: [-23, -70]
+            });
+            map.geoObjects.add(mark);
+        });
+    });
+
+
+
+    $('.b-coins-more a').click(function(e)
+    {
+        e.preventDefault();
+
+        $(this).parent().hide();
+        $(this).closest('.b-coins').find('.b-coins-items_hidden').slideDown();
+    });
+
+    $('.b-labeled-input input[type=text]').autosizeInput();
+
+    $('.b-page-head-menu_trigger').each(function(index, menu)
+    {
+        var $menu = $(menu);
+        var $pages = $($menu.data('pages'));
+        var $menu_items = $menu.children('.b-page-head-menu-item');
+        $menu_items.click(function(e)
+        {
+            e.preventDefault();
+
+            var $self = $(this);
+            $menu_items.removeClass('b-page-head-menu-item_current');
+            $self.addClass('b-page-head-menu-item_current');
+            $pages.children().removeClass('b-pages-item_current');
+            $($self.attr('href')).addClass('b-pages-item_current');
+        });
+    });
+
+
+
+    jQuery.fn.ForceNumericOnly = function(){
+        return this.each(function(){
+            $(this).keydown(function(e){
+                var key = e.charCode || e.keyCode || 0;
+                // Разрешаем backspace, tab, delete, стрелки, обычные цифры и цифры на дополнительной клавиатуре
+                return (
+                    key == 8 ||
+                        key == 9 ||
+                        key == 46 ||
+                        (key >= 37 && key <= 40) ||
+                        (key >= 48 && key <= 57) ||
+                        (key >= 96 && key <= 105));
+            });
+        });
+    };
+   $('[validate="only_int"]').ForceNumericOnly();
+
+
+    if ( $('#cardBranchList').length ) {
+        $('#cardBranchList').change(function(){
+            if ( !$(this).val().length ) {
+                return;
+            }
+            window.location.href = '/atms/' + $(this).val() + '/';
+        });
+    }
+
+    if ( $('#crossBranchList').length ) {
+        $('#crossBranchList').change(function(){
+            if ( !$(this).val().length ) {
+                return;
+            }
+            window.location.href = '/branches/' + $(this).val() + '/currency-rates/';
+        });
+    }
+
+    if ( $('#paymentAtmsBranchList').length ) {
+        $('#paymentAtmsBranchList').change(function(){
+            if ( !$(this).val().length ) {
+                return;
+            }
+            window.location.href = '/branches/' + $(this).val() + '/atms-payment/';
+        });
+    }
+    if ( $('#enBranchList').length ) {
+        $('#enBranchList').change(function(){
+            if ( !$(this).val().length ) {
+                return;
+            }
+            window.location.href = '/en/about/region/' + $(this).val() + '/';
+        });
+    }
+
+    if( window.location.search.indexOf('switch') > -1 && $('#switchBlock').length ) {
+        $('html, body').animate({scrollTop: $('#switchBlock').eq(0).position().top - 50}, 500);
+
+    }
+
+    if( window.location.search.indexOf('filter') > -1 && $('[id^="filter"]').length ) {
+        var top = $('[id^="filter"]').eq(0).position().top;
+        if ( top < 100 ) {
+            top = $('[id^="filter"]').eq(0).offset().top;
+        }
+        $('html, body').animate({scrollTop: top - 50}, 500);
+
+    }
+    if ($.browser.webkit || $.browser.mozilla) {
+        $('input, textarea').on('focus', function() {
+            if ($(this).attr('placeholder')) $(this).data('placeholder', $(this).attr('placeholder')).removeAttr('placeholder');
+        }).on('blur', function() {
+                if ($(this).data('placeholder')) $(this).attr('placeholder', $(this).data('placeholder')).removeData('placeholder');
+            });
+    }
+    if ( $('.b-news-item').find('p').length ){
+        $('.b-news-item').find('p').addClass('b-news-item-desc');
+    }
+
+    if ( $('#branch-popup').find('.js-branches-item').length ) {
+        $('#branch-popup').find('.js-branches-item').click(function( e ){
+            e.preventDefault();
+            $('#changeBranchCode').val( $(this).data('branch-code') );
+            $('#changeRegionId').val( $(this).data('region-id') );
+
+            $('#changeBranchForm').submit();
+        });
+    }
+
+    $('.b-switch-indicator').click(function(){
+        if ( $(this).attr('url').length ) {
+            window.location.href = $(this).attr('url');
+        }
+    });
+});
+
+
+
+function array_search( needle, haystack, strict ) {	// Searches the array for a given value and returns the corresponding key if
+    // successful
+    //
+    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+
+    var strict = !!strict;
+
+    for(var key in haystack){
+        if( (strict && haystack[key] === needle) || (!strict && haystack[key] == needle) ){
+            return key;
+        }
+    }
+
+    return false;
+}
+function ksort (inputArr, sort_flags) {
+
+    var tmp_arr = {},
+        keys = [],
+        sorter, i, k, that = this,
+        strictForIn = false,
+        populateArr = {};
+
+    switch (sort_flags) {
+        case 'SORT_STRING':
+            // compare items as strings
+            sorter = function (a, b) {
+                return that.strnatcmp(a, b);
+            };
+            break;
+        case 'SORT_LOCALE_STRING':
+            // compare items as strings, based on the current locale (set with  i18n_loc_set_default() as of PHP6)
+            var loc = this.i18n_loc_get_default();
+            sorter = this.php_js.i18nLocales[loc].sorting;
+            break;
+        case 'SORT_NUMERIC':
+            // compare items numerically
+            sorter = function (a, b) {
+                return ((a + 0) - (b + 0));
+            };
+            break;
+        // case 'SORT_REGULAR': // compare items normally (don't change types)
+        default:
+            sorter = function (a, b) {
+                var aFloat = parseFloat(a),
+                    bFloat = parseFloat(b),
+                    aNumeric = aFloat + '' === a,
+                    bNumeric = bFloat + '' === b;
+                if (aNumeric && bNumeric) {
+                    return aFloat > bFloat ? 1 : aFloat < bFloat ? -1 : 0;
+                } else if (aNumeric && !bNumeric) {
+                    return 1;
+                } else if (!aNumeric && bNumeric) {
+                    return -1;
+                }
+                return a > b ? 1 : a < b ? -1 : 0;
+            };
+            break;
+    }
+
+    // Make a list of key names
+    for (k in inputArr) {
+        if (inputArr.hasOwnProperty(k)) {
+            keys.push(k);
+        }
+    }
+    keys.sort(sorter);
+
+    // BEGIN REDUNDANT
+    this.php_js = this.php_js || {};
+    this.php_js.ini = this.php_js.ini || {};
+    // END REDUNDANT
+    strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js.ini['phpjs.strictForIn'].local_value !== 'off';
+    populateArr = strictForIn ? inputArr : populateArr;
+
+    // Rebuild array with sorted key names
+    for (i = 0; i < keys.length; i++) {
+        k = keys[i];
+        tmp_arr[k] = inputArr[k];
+        if (strictForIn) {
+            delete inputArr[k];
+        }
+    }
+    for (i in tmp_arr) {
+        if (tmp_arr.hasOwnProperty(i)) {
+            populateArr[i] = tmp_arr[i];
+        }
+    }
+
+    return strictForIn || populateArr;
+}
+
+function str_replace ( search, replace, subject ) {	// Replace all occurrences of the search string with the replacement string
+    //
+    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   improved by: Gabriel Paderni
+
+    if(!(replace instanceof Array)){
+        replace=new Array(replace);
+        if(search instanceof Array){//If search	is an array and replace	is a string, then this replacement string is used for every value of search
+            while(search.length>replace.length){
+                replace[replace.length]=replace[0];
+            }
+        }
+    }
+
+    if(!(search instanceof Array))search=new Array(search);
+    while(search.length>replace.length){//If replace	has fewer values than search , then an empty string is used for the rest of replacement values
+        replace[replace.length]='';
+    }
+
+    if(subject instanceof Array){//If subject is an array, then the search and replace is performed with every entry of subject , and the return value is an array as well.
+        for(k in subject){
+            subject[k]=str_replace(search,replace,subject[k]);
+        }
+        return subject;
+    }
+
+    for(var k=0; k<search.length; k++){
+        var i = subject.indexOf(search[k]);
+        while(i>-1){
+            subject = subject.replace(search[k], replace[k]);
+            i = subject.indexOf(search[k],i);
+        }
+    }
+
+    return subject;
+
+}
+
+
+function numberRound( value, precision ){
+    precision = precision * 10;
+    if ( !precision ){
+        return Math.round(value);
+    }else{
+        return Math.round(value*precision)/precision;
+    }
+
+}
+function in_array(needle, haystack, strict) {	// Checks if a value exists in an array
+    //
+    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+
+    var found = false, key, strict = !!strict;
+
+    for (key in haystack) {
+        if ((strict && haystack[key] === needle) || (!strict && haystack[key] == needle)) {
+            found = true;
+            break;
+        }
+    }
+
+    return found;
+}
+
+function pluralForms(num, expressions) {
+    var result;
+    count = num % 100;
+    if (count >= 5 && count <= 20) {
+        result = expressions[2];
+    } else {
+        count = count % 10;
+        if (count == 1) {
+            result = expressions[0];
+        } else if (count >= 2 && count <= 4) {
+            result = expressions[1];
+        } else {
+            result = expressions[2];
+        }
+    }
+    return result;
+}
+function number_format( number, decimals, dec_point, thousands_sep ) {	// Format a number with grouped thousands
+    //
+    // +   original by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +	 bugfix by: Michael White (http://crestidg.com)
+
+    var i, j, kw, kd, km;
+
+    // input sanitation & defaults
+    if( isNaN(decimals = Math.abs(decimals)) ){
+        decimals = 2;
+    }
+    if( dec_point == undefined ){
+        dec_point = ",";
+    }
+    if( thousands_sep == undefined ){
+        thousands_sep = ".";
+    }
+
+    i = parseInt(number = (+number || 0).toFixed(decimals)) + "";
+
+    if( (j = i.length) > 3 ){
+        j = j % 3;
+    } else{
+        j = 0;
+    }
+
+    km = (j ? i.substr(0, j) + thousands_sep : "");
+    kw = i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands_sep);
+    //kd = (decimals ? dec_point + Math.abs(number - i).toFixed(decimals).slice(2) : "");
+    kd = (decimals ? dec_point + Math.abs(number - i).toFixed(decimals).replace(/-/, 0).slice(2) : "");
+
+
+    return km + kw + kd;
+}
